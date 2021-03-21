@@ -12,6 +12,7 @@ class App(tk.Frame):
         
         self.CreateWidgets()
 
+        #Инициализация матрицы
         self.size1 = 0
         self.size2 = 0
         self.matrix = []
