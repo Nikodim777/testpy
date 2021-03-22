@@ -70,9 +70,6 @@ class App(tk.Frame):
         if filename:
             #Очистка текстовых полей
             self.inputText.delete("1.0", "end")
-            self.outputText["state"] = "normal"
-            self.outputText.delete("1.0", "end")
-            self.outputText["state"] = "disabled"
 
             #Получение матрицы из файла
             file = open(filename, 'r')
@@ -84,7 +81,6 @@ class App(tk.Frame):
                 self.size1 = 0
                 self.size2 = 0
                 self.matrix = []
-                print("saf")
             
             file.close()
 
@@ -137,6 +133,18 @@ class App(tk.Frame):
         return True
 
     def Process(self):
+        #Чтение матрицы из текстового поля
+        text = self.inputText.get("1.0", "end").rstrip()
+        if not self.ReadMatrix(text) or not self.CheckMatrix():
+            self.size1 = 0
+            self.size2 = 0
+            self.matrix = []
+
+        #Очистка текстовых полей
+        self.outputText["state"] = "normal"
+        self.outputText.delete("1.0", "end")
+        self.outputText["state"] = "disabled"
+            
         #Отражение матрицы
         for i in range(self.size1):
             for j in range(self.size2 - i):
