@@ -59,7 +59,9 @@ class App(tk.Frame):
         self.inputText.pack(side="left")
         self.inputText.pack(expand=True)
         self.inputText.pack(fill="both")
-        
+        self.inputText.bind("<<Modified>>", self.ClearOutput)
+        self.inputText.bind("<Key>", self.ClearOutput)
+
         self.outputText = tk.Text(bd="5", width="30", state="disabled")
         self.outputText.pack(side="right")
         self.outputText.pack(expand=True)
@@ -85,13 +87,19 @@ class App(tk.Frame):
             file.close()
 
     def WriteFile(self):
-        filename = fd.asksaveasfile(title = "Выберите или создайте файл",
+        text = self.outputText.get("1.0", "end").rstrip();
+        
+        if text:
+            filename = fd.asksaveasfile(title = "Выберите или создайте файл",
                                     filetypes = [("Файлы матриц","*.mtr")],
                                     defaultextension = ".mtr")
-        if filename:
-            file = open(filename.name, 'w')
-            file.write(self.outputText.get("1.0", "end").rstrip())
-            file.close()
+        
+            if filename:
+                file = open(filename.name, 'w')
+                file.write(text)
+                file.close()
+        else:
+            mb.showerror(title = "Ошибка!", message = "Размер матрицы за пределами диапазона")
 
     def ReadMatrix(self, text):
         try:
@@ -139,11 +147,7 @@ class App(tk.Frame):
             self.size1 = 0
             self.size2 = 0
             self.matrix = []
-
-        #Очистка текстовых полей
-        self.outputText["state"] = "normal"
-        self.outputText.delete("1.0", "end")
-        self.outputText["state"] = "disabled"
+            return
             
         #Отражение матрицы
         for i in range(self.size1):
@@ -158,6 +162,10 @@ class App(tk.Frame):
         self.outputText.insert("1.0", text)
         self.outputText["state"] = "disabled"
 
+    def ClearOutput(self, event):
+        self.outputText["state"] = "normal"
+        self.outputText.delete("1.0", "end")
+        self.outputText["state"] = "disabled"
     
 
 root = tk.Tk()
